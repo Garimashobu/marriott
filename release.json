@@ -1,0 +1,72 @@
+ [
+    {
+      "releaseNumber": "R6.11",
+      "plannedDate": "03/09/2018",
+      "actualDate": "03/09/2018",
+      "applicationName": "Marriott Mobile iOS",
+      "domain": "Channels"
+    },
+    {
+      "releaseNumber": "Release 1",
+      "plannedDate": "05/10/2018",
+      "actualDate": "05/10/2018",
+      "applicationName": "eConfo",
+      "domain": "Channels"
+    },
+    {
+      "releaseNumber": "Release 2",
+      "plannedDate": "06/22/2018",
+      "actualDate": "06/22/2018",
+      "applicationName": "eConfo",
+      "domain": "Chan"
+    },
+    {
+      "releaseNumber": "R6",
+      "plannedDate": "05/18/2018",
+      "actualDate": "05/18/2018",
+      "applicationName": "Stargroups",
+      "domain": "Chan"
+    },
+    {
+      "releaseNumber": "R7",
+      "plannedDate": "07/06/2018",
+      "actualDate": "07/06/2018",
+      "applicationName": "Stargroups",
+      "domain": "Chs"
+    },
+    {
+      "releaseNumber": "R5",
+      "plannedDate": "04/25/2018",
+      "actualDate": "04/25/2018",
+      "applicationName": "ResCon",
+      "domain": "Chls"
+    },
+    {
+      "releaseNumber": "R5.1",
+      "plannedDate": "08/01/2018",
+      "actualDate": "08/01/2018",
+      "applicationName": "StarGuest - GC",
+      "domain": "Ch"
+    },
+    {
+      "releaseNumber": "Release 4",
+      "plannedDate": "04/27/2018",
+      "actualDate": "04/27/2018",
+      "applicationName": "StarGuest - GC",
+      "domain": "Cels"
+    },
+    {
+      "releaseNumber": "Release 5",
+      "plannedDate": "06/01/2018",
+      "actualDate": "06/01/2018",
+      "applicationName": "StarGuest - GC",
+      "domain": "Channels"
+    },
+    {
+      "releaseNumber": "Release 6",
+      "plannedDate": "06/22/2018",
+      "actualDate": "06/22/2018",
+      "applicationName": "StarGuest - GC",
+      "domain": "Channels"
+    }
+  ]

@@ -1,5 +1,6 @@
-angular.module('components', ['ui.bootstrap']).
-  directive('tabs', function() {
+var components = angular.module('components', ['ui.bootstrap']);
+
+components.directive('tabs', function() {
     return {
       restrict: 'E',
       transclude: true,
@@ -30,8 +31,8 @@ angular.module('components', ['ui.bootstrap']).
         '</div>',
       replace: true
     };
-  }).
-  directive('pane', function() {
+  })
+components.directive('pane', function() {
     return {
       require: '^tabs',
       restrict: 'E',
@@ -45,17 +46,349 @@ angular.module('components', ['ui.bootstrap']).
         '</div>',
       replace: true
     };
-  }).
-  controller('mainCtrl', function($scope, $http){
+  });
+
+components.directive('ngEnter', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
+
+components.controller('mainCtrl', function($scope, $http){
     $scope.applicationbBodyPage =false;
     $scope.releaseBodyPage=true;
-    $scope.goToSecondPage = function(){
+    var goToSecondPage = function(){
+      //alert("hello");
       $scope.applicationbBodyPage=!$scope.applicationbBodyPage;
       $scope.releaseBodyPage= !$scope.releaseBodyPage;
     };
+   
+  window.onload = function () {
 
-    $scope.getData = function(selectedApplication){
-        //alert($scope.selectedApplication);
+var chart = new CanvasJS.Chart("chartContainer", {
+  animationEnabled: true,
+  title:{
+    text: "Application Release Timeline"
+  },
+  axisX: {
+    title:"Planned Date",
+        valueFormatString: "DD-MM-YY"
+  },
+  axisY: {
+    title:"",
+    lineThickness: 0
+  },
+  legend:{
+    horizontalAlign: "left"
+      
+  },
+  data: [{
+    type: "bubble",
+    showInLegend: true,
+    legendText: "Size of Bubble Represents Number of Dependencies",
+    legendMarkerType: "circle",
+    legendMarkerColor: "grey",
+    toolTipContent: "<b>{name}</b><br/>{description}<br/>Domain: {domain}<br/>Planned Date: {x}<br/>Dependencies: {z}",
+    dataPoints: getReleaseData(),
+    click: function(e){
+      goToSecondPage();
+   }
+  }]
+});
+chart.render();
+
+}
+
+var getReleaseData = function() {
+  var data = [];
+  
+  for (var i = 0; i < releaseData.data.length; i++) {
+    var app = {
+      name: releaseData.data[i].applicationName,
+      domain: releaseData.data[i].domain,
+      description: releaseData.data[i].description
+    };
+    
+    for (key in releaseData.data[i].releases) {
+      var release = {
+        x: new Date(releaseData.data[i].releases[key].plannedDate),
+        y: Math.random() * 1000 * 1000,
+        z: Object.keys(releaseData.data[i].releases[key].dependencies).length
+      };
+      
+      data.push(Object.assign({}, app, release));
+    }
+  }
+  
+  return data;
+}
+
+var releaseData = {
+  "data": [
+    {
+      "applicationName": "Marriott Mobile iOS",
+      "description": "Marriott Mobile iOS",
+      "domain": "Channels",
+      "releases": {
+        "release1": {
+          "releaseNumber": "R6.11",
+          "plannedDate": "03/09/2018",
+          "actualDate": "03/09/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG"
+          }
+        },
+        "release2": {
+          "releaseNumber": "R6.12",
+          "plannedDate": "05/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG"
+          }
+        },
+        "release3": {
+          "releaseNumber": "R6.13",
+          "plannedDate": "05/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG",
+            "3": "Valhalla"
+          }
+        },
+        "release4": {
+          "releaseNumber": "R6.14",
+          "plannedDate": "05/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API"
+          }
+        },
+        "release5": {
+          "releaseNumber": "R7.0",
+          "plannedDate": "05/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            
+          }
+        }
+      },
+      "ppmProjects": {
+        "fileName": "S",
+        "Link": "http://www.ppmproject.com"
+      },
+      "environments": {
+        "environmentName": "Dev",
+        "Hostname/IPAddress": "MARRIOTTDEVMOBILEDEV01"
+      }
+    },
+    {
+      "applicationName": "iOS",
+      "description": "Marriott Mobile iOS",
+      "domain": "Channels",
+      "releases": {
+        "release1": {
+          "releaseNumber": "R6.11",
+          "plannedDate": "03/09/2018",
+          "actualDate": "03/09/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG",
+            "3": "Valhalla"
+          }
+        },
+        "release2": {
+          "releaseNumber": "R6.12",
+          "plannedDate": "04/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG"
+          }
+        },
+        "release3": {
+          "releaseNumber": "R6.13",
+          "plannedDate": "03/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG",
+            "3": "Valhalla"
+          }
+        },
+        "release4": {
+          "releaseNumber": "R6.14",
+          "plannedDate": "05/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API"
+          }
+        },
+        "release5": {
+          "releaseNumber": "R7.0",
+          "plannedDate": "10/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG",
+            "3": "Valhalla"
+          }
+        }
+      },
+      "ppmProjects": {
+        "fileName": "S",
+        "Link": "http://www.ppmproject.com"
+      },
+      "environments": {
+        "environmentName": "Dev",
+        "Hostname/IPAddress": "MARRIOTTDEVMOBILEDEV01"
+      }
+    },
+    {
+      "applicationName": "domain",
+      "description": "Marriott Mobile iOS",
+      "domain": "Channels",
+      "releases": {
+        "release1": {
+          "releaseNumber": "R6.11",
+          "plannedDate": "03/09/2018",
+          "actualDate": "03/09/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            
+          }
+        },
+        "release2": {
+          "releaseNumber": "R6.12",
+          "plannedDate": "11/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            
+          }
+        },
+        "release3": {
+          "releaseNumber": "R6.13",
+          "plannedDate": "09/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG",
+            "3": "Valhalla"
+          }
+        },
+        "release4": {
+          "releaseNumber": "R6.14",
+          "plannedDate": "05/31/2018",
+          "actualDate": "07/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG",
+            "3": "Valhalla"
+          }
+        },
+        "release5": {
+          "releaseNumber": "R7.0",
+          "plannedDate": "06/31/2018",
+          "actualDate": "05/31/2018",
+          "capabilities": {
+            "c1": "Awards",
+            "c2": "Account Merge"
+          },
+          "dependencies": {
+            "1": "API",
+            "2": "MPG"
+          }
+        }
+      },
+      "ppmProjects": {
+        "fileName": "S",
+        "Link": "http://www.ppmproject.com"
+      },
+      "environments": {
+        "environmentName": "Dev",
+        "Hostname/IPAddress": "MARRIOTTDEVMOBILEDEV01"
+      }
+    }
+  ]
+};
+
+    
+
+    
+
+    $scope.checkForEnterKey = function($event, selectedApplication) {
+        if ($event.keyCode=="13") {
+          getData(selectedApplication);
+        }
+    };
+
+    var getData = function(selectedApplication){
+        
         for(var i=0; i<$scope.data.data.length; i++){
           if($scope.data.data[i].applicationName === $scope.selectedApplication) {
             $scope.domain = $scope.data.data[i].domain;
@@ -64,7 +397,9 @@ angular.module('components', ['ui.bootstrap']).
             $scope.ppmProjects = $scope.data.data[i].ppmProjects;
             $scope.environments = $scope.data.data[i].environments;
           }
+          
         }
+        goToSecondPage();
     };
 
     //$http.get('application.json').then(function (response){
@@ -331,8 +666,8 @@ angular.module('components', ['ui.bootstrap']).
     for(var i=0; i<$scope.data.data.length; i++){
       $scope.names.push($scope.data.data[i].applicationName);
     }
-  }).
-    controller('releaseCtrl', function($scope, $http){
+  })
+components.controller('releaseCtrl', function($scope, $http){
      
       $scope.releaseData =  [
     {

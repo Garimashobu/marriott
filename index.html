@@ -8,6 +8,7 @@
     <!-- <script src="js/angular-animate/angular-animate.js" type="text/javascript"></script> -->
     <script src="js/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script type="text/javascript" src="js/moment.js"></script>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -22,23 +23,25 @@
 </div>
 <div class="mainBody" >
 	<!-- {{releaseBodyPage}} -->
-	<div class="releaseBodyPage" ng-show=releaseBodyPage ng-controller="releaseCtrl">
+	<div class="releaseBodyPage" ng-show=releaseBodyPage>
 		<div>
 			<span>Filter By</span>
 			<span>
-				<select ng-model="selectedData">
+				<select ng-model="selectedData" ng-change = "filterDomainData()">
 					<option disabled selected value>Domain</option>
-					<option>Channels</option>
+					<option >Channels</option>
 				</select>
 			</span>
 			<span>
-				<select ng-model="selectedData">
+				<select ng-model="selectedTimeData" ng-change = "filterTimeFrameData()">
 					<option disabled selected value>TimeFrame</option>
-					<option>2</option>
+					<option>2 weeks</option>
+					<option>3 weeks</option>
+					<option>4 weeks</option>
+					<option>6 weeks</option>
 				</select>
 			</span>
 		</div>
-		
 		<div id="chartContainer" style="height: 300px; width: 70%;"></div>
 	</div>
 	<!-- {{applicationbBodyPage}} -->

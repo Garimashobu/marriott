@@ -62,18 +62,21 @@ components.directive('ngEnter', function () {
     };
 });
 
-components.controller('mainCtrl', function($scope, $http){
+components.controller('mainCtrl', function($scope, $http, $filter){
     $scope.applicationbBodyPage =false;
     $scope.releaseBodyPage=true;
-    var goToSecondPage = function(){
+    var chart;
+    
+    $scope.goToSecondPage = function(){
       //alert("hello");
       $scope.applicationbBodyPage=!$scope.applicationbBodyPage;
       $scope.releaseBodyPage= !$scope.releaseBodyPage;
+      $scope.$apply();
     };
    
   window.onload = function () {
 
-var chart = new CanvasJS.Chart("chartContainer", {
+ chart = new CanvasJS.Chart("chartContainer", {
   animationEnabled: true,
   title:{
     text: "Application Release Timeline"
@@ -83,8 +86,10 @@ var chart = new CanvasJS.Chart("chartContainer", {
         valueFormatString: "DD-MM-YY"
   },
   axisY: {
-    title:"",
-    lineThickness: 0
+   
+    lineThickness: 0,
+    valueFormatString: " ",
+    gridThickness: 0
   },
   legend:{
     horizontalAlign: "left"
@@ -99,7 +104,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
     toolTipContent: "<b>{name}</b><br/>{description}<br/>Domain: {domain}<br/>Planned Date: {x}<br/>Dependencies: {z}",
     dataPoints: getReleaseData(),
     click: function(e){
-      goToSecondPage();
+      getData(e.dataPoint.name);
    }
   }]
 });
@@ -109,19 +114,23 @@ chart.render();
 
 var getReleaseData = function() {
   var data = [];
+
+  if($scope.temp.length > 0){
+    $scope.data.data = $scope.temp;
+  };
   
-  for (var i = 0; i < releaseData.data.length; i++) {
+  for (var i = 0; i < $scope.data.data.length; i++) {
     var app = {
-      name: releaseData.data[i].applicationName,
-      domain: releaseData.data[i].domain,
-      description: releaseData.data[i].description
+      name: $scope.data.data[i].applicationName,
+      domain: $scope.data.data[i].domain,
+      description: $scope.data.data[i].description
     };
     
-    for (key in releaseData.data[i].releases) {
+    for (key in $scope.data.data[i].releases) {
       var release = {
-        x: new Date(releaseData.data[i].releases[key].plannedDate),
+        x: new Date($scope.data.data[i].releases[key].plannedDate),
         y: Math.random() * 1000 * 1000,
-        z: Object.keys(releaseData.data[i].releases[key].dependencies).length
+        z: Object.keys($scope.data.data[i].releases[key].dependencies).length
       };
       
       data.push(Object.assign({}, app, release));
@@ -129,257 +138,54 @@ var getReleaseData = function() {
   }
   
   return data;
-}
-
-var releaseData = {
-  "data": [
-    {
-      "applicationName": "Marriott Mobile iOS",
-      "description": "Marriott Mobile iOS",
-      "domain": "Channels",
-      "releases": {
-        "release1": {
-          "releaseNumber": "R6.11",
-          "plannedDate": "03/09/2018",
-          "actualDate": "03/09/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG"
-          }
-        },
-        "release2": {
-          "releaseNumber": "R6.12",
-          "plannedDate": "05/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG"
-          }
-        },
-        "release3": {
-          "releaseNumber": "R6.13",
-          "plannedDate": "05/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG",
-            "3": "Valhalla"
-          }
-        },
-        "release4": {
-          "releaseNumber": "R6.14",
-          "plannedDate": "05/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API"
-          }
-        },
-        "release5": {
-          "releaseNumber": "R7.0",
-          "plannedDate": "05/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            
-          }
-        }
-      },
-      "ppmProjects": {
-        "fileName": "S",
-        "Link": "http://www.ppmproject.com"
-      },
-      "environments": {
-        "environmentName": "Dev",
-        "Hostname/IPAddress": "MARRIOTTDEVMOBILEDEV01"
-      }
-    },
-    {
-      "applicationName": "iOS",
-      "description": "Marriott Mobile iOS",
-      "domain": "Channels",
-      "releases": {
-        "release1": {
-          "releaseNumber": "R6.11",
-          "plannedDate": "03/09/2018",
-          "actualDate": "03/09/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG",
-            "3": "Valhalla"
-          }
-        },
-        "release2": {
-          "releaseNumber": "R6.12",
-          "plannedDate": "04/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG"
-          }
-        },
-        "release3": {
-          "releaseNumber": "R6.13",
-          "plannedDate": "03/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG",
-            "3": "Valhalla"
-          }
-        },
-        "release4": {
-          "releaseNumber": "R6.14",
-          "plannedDate": "05/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API"
-          }
-        },
-        "release5": {
-          "releaseNumber": "R7.0",
-          "plannedDate": "10/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG",
-            "3": "Valhalla"
-          }
-        }
-      },
-      "ppmProjects": {
-        "fileName": "S",
-        "Link": "http://www.ppmproject.com"
-      },
-      "environments": {
-        "environmentName": "Dev",
-        "Hostname/IPAddress": "MARRIOTTDEVMOBILEDEV01"
-      }
-    },
-    {
-      "applicationName": "domain",
-      "description": "Marriott Mobile iOS",
-      "domain": "Channels",
-      "releases": {
-        "release1": {
-          "releaseNumber": "R6.11",
-          "plannedDate": "03/09/2018",
-          "actualDate": "03/09/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            
-          }
-        },
-        "release2": {
-          "releaseNumber": "R6.12",
-          "plannedDate": "11/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            
-          }
-        },
-        "release3": {
-          "releaseNumber": "R6.13",
-          "plannedDate": "09/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG",
-            "3": "Valhalla"
-          }
-        },
-        "release4": {
-          "releaseNumber": "R6.14",
-          "plannedDate": "05/31/2018",
-          "actualDate": "07/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG",
-            "3": "Valhalla"
-          }
-        },
-        "release5": {
-          "releaseNumber": "R7.0",
-          "plannedDate": "06/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": {
-            "c1": "Awards",
-            "c2": "Account Merge"
-          },
-          "dependencies": {
-            "1": "API",
-            "2": "MPG"
-          }
-        }
-      },
-      "ppmProjects": {
-        "fileName": "S",
-        "Link": "http://www.ppmproject.com"
-      },
-      "environments": {
-        "environmentName": "Dev",
-        "Hostname/IPAddress": "MARRIOTTDEVMOBILEDEV01"
-      }
-    }
-  ]
 };
 
-    
+$scope.filterDomainData = function() {
+  $scope.temp = $filter('filter')($scope.data.data, { domain : $scope.selectedData });
+  chart.options.data[0].dataPoints = getReleaseData();
+  chart.render();
+};
 
-    
+$scope.filterTimeFrameData = function() {
+  var timeFrame;
+  switch($scope.selectedTimeData) {
+    case "2 weeks":
+    timeFrame = twoWeeks();
+    break;
+
+    case "3 weeks":
+    timeFrame = threeWeeks();
+    break;
+
+    case "4 weeks":
+    timeFrame = fourWeeks();
+    break;
+
+    case "6 weeks":
+    timeFrame = sixWeeks();
+    break;
+  }
+  
+
+  for(var i= 0; i<$scope.data.data.length; i++){
+    var app = {
+      applicationName: $scope.data.data[i].applicationName,
+      domain: $scope.data.data[i].domain,
+      description: $scope.data.data[i].description,
+      releases: []
+    };
+
+    for (key in $scope.data.data[i].releases) {
+      if(moment($scope.data.data[i].releases[key].plannedDate).isSameOrBefore(moment(timeFrame))){
+        app.releases.push($scope.data.data[i].releases[key]);
+        $scope.temp.push(Object.assign({}, app));
+     }
+    }
+  }
+  console.log($scope.temp);
+  chart.options.data[0].dataPoints = getReleaseData();
+  chart.render();
+}
 
     $scope.checkForEnterKey = function($event, selectedApplication) {
         if ($event.keyCode=="13") {
@@ -390,16 +196,36 @@ var releaseData = {
     var getData = function(selectedApplication){
         
         for(var i=0; i<$scope.data.data.length; i++){
-          if($scope.data.data[i].applicationName === $scope.selectedApplication) {
+          if($scope.data.data[i].applicationName === selectedApplication) {
+            $scope.selectedApplication = $scope.data.data[i].applicationName
             $scope.domain = $scope.data.data[i].domain;
             $scope.description = $scope.data.data[i].description;
             $scope.releases = $scope.data.data[i].releases;
             $scope.ppmProjects = $scope.data.data[i].ppmProjects;
             $scope.environments = $scope.data.data[i].environments;
           }
-          
         }
-        goToSecondPage();
+        $scope.goToSecondPage();
+    };
+
+    var twoWeeks = function() {
+      var today = moment();
+      return twoWeeks = today.add(14, 'days');
+    };
+
+    var threeWeeks = function() {
+      var today = moment();
+      return twoWeeks = today.add(21, 'days');
+    };
+
+    var fourWeeks = function() {
+      var today = moment();
+      return twoWeeks = today.add(28, 'days');
+    };
+
+    var sixWeeks = function() {
+      var today = moment();
+      return twoWeeks = today.add(42, 'days');
     };
 
     //$http.get('application.json').then(function (response){
@@ -409,11 +235,11 @@ var releaseData = {
     {
       "applicationName": "Marriott Mobile iOS",
       "description": "Marriott Mobile iOS",
-      "domain": "Channels",
+      "domain": "Chaels",
       "releases": [
          {
           "releaseNumber": "R6.11",
-          "plannedDate": "03/09/2018",
+          "plannedDate": "12/09/2018",
           "actualDate": "03/09/2018",
           "capabilities": [
                       "Awards",
@@ -427,7 +253,7 @@ var releaseData = {
         },
         {
           "releaseNumber": "R6.12",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "06/25/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -441,7 +267,7 @@ var releaseData = {
         },
         {
           "releaseNumber": "R6.13",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "10/31/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -455,7 +281,7 @@ var releaseData = {
         },
         {
           "releaseNumber": "R6.14",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "09/31/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -469,7 +295,7 @@ var releaseData = {
         },
         {
           "releaseNumber": "R7.0",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "08/31/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -493,11 +319,11 @@ var releaseData = {
     {
       "applicationName": "iOS",
       "description": "Marriott Mobile iOS",
-      "domain": "Channels",
-      "releases": {
-        "release1": {
+      "domain": "Chaels",
+      "releases": [
+        {
           "releaseNumber": "R6.11",
-          "plannedDate": "03/09/2018",
+          "plannedDate": "06/24/2018",
           "actualDate": "03/09/2018",
           "capabilities": [
                       "Awards",
@@ -509,9 +335,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release2": {
+        {
           "releaseNumber": "R6.12",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "07/05/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -523,9 +349,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release3": {
+        {
           "releaseNumber": "R6.13",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "08/02/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -537,9 +363,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release4": {
+        {
           "releaseNumber": "R6.14",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "09/15/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -551,9 +377,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release5": {
+        {
           "releaseNumber": "R7.0",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "06/29/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -565,7 +391,7 @@ var releaseData = {
                        "Valhalla"
                     ]
         }
-      },
+      ],
       "ppmProjects": {
         "fileName": "S",
         "Link": "http://www.ppmproject.com"
@@ -579,10 +405,10 @@ var releaseData = {
       "applicationName": "domain",
       "description": "Marriott Mobile iOS",
       "domain": "Channels",
-      "releases": {
-        "release1": {
+      "releases": [
+         {
           "releaseNumber": "R6.11",
-          "plannedDate": "03/09/2018",
+          "plannedDate": "12/09/2018",
           "actualDate": "03/09/2018",
           "capabilities": [
                       "Awards",
@@ -594,9 +420,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release2": {
+        {
           "releaseNumber": "R6.12",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "06/30/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -608,9 +434,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release3": {
+        {
           "releaseNumber": "R6.13",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "06/30/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -622,9 +448,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release4": {
+        {
           "releaseNumber": "R6.14",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "07/25/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -636,9 +462,9 @@ var releaseData = {
                        "Valhalla"
                     ]
         },
-        "release5": {
+        {
           "releaseNumber": "R7.0",
-          "plannedDate": "05/31/2018",
+          "plannedDate": "07/02/2018",
           "actualDate": "05/31/2018",
           "capabilities": [
                       "Awards",
@@ -650,7 +476,7 @@ var releaseData = {
                        "Valhalla"
                     ]
         }
-      },
+      ],
       "ppmProjects": {
         "fileName": "S",
         "Link": "http://www.ppmproject.com"
@@ -666,81 +492,4 @@ var releaseData = {
     for(var i=0; i<$scope.data.data.length; i++){
       $scope.names.push($scope.data.data[i].applicationName);
     }
-  })
-components.controller('releaseCtrl', function($scope, $http){
-     
-      $scope.releaseData =  [
-    {
-      "releaseNumber": "R6.11",
-      "plannedDate": "03/09/2018",
-      "actualDate": "03/09/2018",
-      "applicationName": "Marriott Mobile iOS",
-      "domain": "Channels"
-    },
-    {
-      "releaseNumber": "Release 1",
-      "plannedDate": "05/10/2018",
-      "actualDate": "05/10/2018",
-      "applicationName": "eConfo",
-      "domain": "Channels"
-    },
-    {
-      "releaseNumber": "Release 2",
-      "plannedDate": "06/22/2018",
-      "actualDate": "06/22/2018",
-      "applicationName": "eConfo",
-      "domain": "Chan"
-    },
-    {
-      "releaseNumber": "R6",
-      "plannedDate": "05/18/2018",
-      "actualDate": "05/18/2018",
-      "applicationName": "Stargroups",
-      "domain": "Chan"
-    },
-    {
-      "releaseNumber": "R7",
-      "plannedDate": "07/06/2018",
-      "actualDate": "07/06/2018",
-      "applicationName": "Stargroups",
-      "domain": "Chs"
-    },
-    {
-      "releaseNumber": "R5",
-      "plannedDate": "04/25/2018",
-      "actualDate": "04/25/2018",
-      "applicationName": "ResCon",
-      "domain": "Chls"
-    },
-    {
-      "releaseNumber": "R5.1",
-      "plannedDate": "08/01/2018",
-      "actualDate": "08/01/2018",
-      "applicationName": "StarGuest - GC",
-      "domain": "Ch"
-    },
-    {
-      "releaseNumber": "Release 4",
-      "plannedDate": "04/27/2018",
-      "actualDate": "04/27/2018",
-      "applicationName": "StarGuest - GC",
-      "domain": "Cels"
-    },
-    {
-      "releaseNumber": "Release 5",
-      "plannedDate": "06/01/2018",
-      "actualDate": "06/01/2018",
-      "applicationName": "StarGuest - GC",
-      "domain": "Channels"
-    },
-    {
-      "releaseNumber": "Release 6",
-      "plannedDate": "06/22/2018",
-      "actualDate": "06/22/2018",
-      "applicationName": "StarGuest - GC",
-      "domain": "Channels"
-    }
-  ]
-;
-     
-  })
+  });

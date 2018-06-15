@@ -82,7 +82,7 @@ components.controller('mainCtrl', function($scope, $http, $filter){
   },
   axisX: {
     title:"Planned Date",
-        valueFormatString: "DD-MM-YY"
+        valueFormatString: "MMM DD YYYY"
   },
   axisY: {
    
@@ -141,7 +141,6 @@ var getReleaseData = function() {
 
 $scope.filterDomainData = function() {
   $scope.selectedTimeData = "";
-  $scope.temp = [];
   $scope.temp = $filter('filter')($scope.data.data, { domain : $scope.selectedData });
   chart.options.data[0].dataPoints = getReleaseData();
   chart.render();

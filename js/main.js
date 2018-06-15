@@ -68,7 +68,6 @@ components.controller('mainCtrl', function($scope, $http, $filter){
     var chart;
     
     $scope.goToSecondPage = function(){
-      //alert("hello");
       $scope.applicationbBodyPage=!$scope.applicationbBodyPage;
       $scope.releaseBodyPage= !$scope.releaseBodyPage;
       $scope.$apply();
@@ -100,7 +99,7 @@ components.controller('mainCtrl', function($scope, $http, $filter){
     showInLegend: true,
     legendText: "Size of Bubble Represents Number of Dependencies",
     legendMarkerType: "circle",
-    legendMarkerColor: "grey",
+    legendMarkerColor: "white",
     toolTipContent: "<b>{name}</b><br/>{description}<br/>Domain: {domain}<br/>Planned Date: {x}<br/>Dependencies: {z}",
     dataPoints: getReleaseData(),
     click: function(e){
@@ -114,7 +113,7 @@ chart.render();
 
 var getReleaseData = function() {
   var data = [];
-
+  var j =0;
   if($scope.temp.length > 0){
     $scope.data.data = $scope.temp;
   };
@@ -129,7 +128,7 @@ var getReleaseData = function() {
     for (key in $scope.data.data[i].releases) {
       var release = {
         x: new Date($scope.data.data[i].releases[key].plannedDate),
-        y: Math.random() * 1000 * 1000,
+        y: (i+2)* 2 * 10,
         z: Object.keys($scope.data.data[i].releases[key].dependencies).length
       };
       
@@ -141,51 +140,62 @@ var getReleaseData = function() {
 };
 
 $scope.filterDomainData = function() {
+  $scope.selectedTimeData = "";
+  $scope.temp = [];
   $scope.temp = $filter('filter')($scope.data.data, { domain : $scope.selectedData });
   chart.options.data[0].dataPoints = getReleaseData();
   chart.render();
 };
 
 $scope.filterTimeFrameData = function() {
+  $scope.selectedData = "";
   var timeFrame;
+  var data;
+  $scope.temp = [];
   switch($scope.selectedTimeData) {
     case "2 weeks":
+    console.log($scope.freshData);
+    data = $scope.freshData;
     timeFrame = twoWeeks();
     break;
 
     case "3 weeks":
+    data = $scope.freshData;
     timeFrame = threeWeeks();
     break;
 
     case "4 weeks":
+    data = $scope.freshData;
     timeFrame = fourWeeks();
     break;
 
     case "6 weeks":
+    data = $scope.freshData;
     timeFrame = sixWeeks();
     break;
   }
   
 
-  for(var i= 0; i<$scope.data.data.length; i++){
+  for(var i= 0; i<data.data.length; i++){
     var app = {
-      applicationName: $scope.data.data[i].applicationName,
-      domain: $scope.data.data[i].domain,
-      description: $scope.data.data[i].description,
+      applicationName: data.data[i].applicationName,
+      domain: data.data[i].domain,
+      description: data.data[i].description,
       releases: []
     };
 
-    for (key in $scope.data.data[i].releases) {
-      if(moment($scope.data.data[i].releases[key].plannedDate).isSameOrBefore(moment(timeFrame))){
-        app.releases.push($scope.data.data[i].releases[key]);
-        $scope.temp.push(Object.assign({}, app));
+    for (key in data.data[i].releases) {
+      if(moment(data.data[i].releases[key].plannedDate).isSameOrBefore(moment(timeFrame))){
+        app.releases.push(data.data[i].releases[key]);
      }
     }
+    if(timeFrame) {
+      $scope.temp.push(Object.assign({}, app));
+    }
   }
-  console.log($scope.temp);
   chart.options.data[0].dataPoints = getReleaseData();
   chart.render();
-}
+};
 
     $scope.checkForEnterKey = function($event, selectedApplication) {
         if ($event.keyCode=="13") {
@@ -228,266 +238,267 @@ $scope.filterTimeFrameData = function() {
       return twoWeeks = today.add(42, 'days');
     };
 
-    //$http.get('application.json').then(function (response){
-   
     $scope.data = {
-  "data": [
-    {
-      "applicationName": "Marriott Mobile iOS",
-      "description": "Marriott Mobile iOS",
-      "domain": "Chaels",
-      "releases": [
-         {
-          "releaseNumber": "R6.11",
-          "plannedDate": "12/09/2018",
-          "actualDate": "03/09/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.12",
-          "plannedDate": "06/25/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.13",
-          "plannedDate": "10/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.14",
-          "plannedDate": "09/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R7.0",
-          "plannedDate": "08/31/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]        }
-      ],
-      "ppmProjects": {
-        "fileName": "S",
-        "Link": "http://www.ppmproject.com"
-      },
-      "environments": {
-        "environmentName": "Dev",
-        "HostName": "MARRIOTTDEVMOBILEDEV01"
-      }
-    },
-    {
-      "applicationName": "iOS",
-      "description": "Marriott Mobile iOS",
-      "domain": "Chaels",
-      "releases": [
-        {
-          "releaseNumber": "R6.11",
-          "plannedDate": "06/24/2018",
-          "actualDate": "03/09/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.12",
-          "plannedDate": "07/05/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.13",
-          "plannedDate": "08/02/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.14",
-          "plannedDate": "09/15/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R7.0",
-          "plannedDate": "06/29/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        }
-      ],
-      "ppmProjects": {
-        "fileName": "S",
-        "Link": "http://www.ppmproject.com"
-      },
-      "environments": {
-        "environmentName": "Dev",
-        "HostName": "MARRIOTTDEVMOBILEDEV01"
-      }
-    },
-    {
-      "applicationName": "domain",
-      "description": "Marriott Mobile iOS",
-      "domain": "Channels",
-      "releases": [
-         {
-          "releaseNumber": "R6.11",
-          "plannedDate": "12/09/2018",
-          "actualDate": "03/09/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.12",
-          "plannedDate": "06/30/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.13",
-          "plannedDate": "06/30/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R6.14",
-          "plannedDate": "07/25/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        },
-        {
-          "releaseNumber": "R7.0",
-          "plannedDate": "07/02/2018",
-          "actualDate": "05/31/2018",
-          "capabilities": [
-                      "Awards",
-                      "Account Merge"
-                    ],
-          "dependencies": [
-                      "API",
-                       "MPG",
-                       "Valhalla"
-                    ]
-        }
-      ],
-      "ppmProjects": {
-        "fileName": "S",
-        "Link": "http://www.ppmproject.com"
-      },
-      "environments": {
-        "environmentName": "Dev",
-        "HostName": "MARRIOTTDEVMOBILEDEV01"
-      }
-    }
-  ]
-};
+      "data": [
+          {
+            "applicationName": "Marriott Mobile iOS",
+            "description": "Marriott Mobile iOS",
+            "domain": "Chaels",
+            "releases": [
+               {
+                "releaseNumber": "R6.11",
+                "plannedDate": "12/09/2018",
+                "actualDate": "03/09/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.12",
+                "plannedDate": "06/25/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.13",
+                "plannedDate": "10/31/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.14",
+                "plannedDate": "09/31/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R7.0",
+                "plannedDate": "08/31/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]        }
+            ],
+            "ppmProjects": {
+              "fileName": "S",
+              "Link": "http://www.ppmproject.com"
+            },
+            "environments": {
+              "environmentName": "Dev",
+              "HostName": "MARRIOTTDEVMOBILEDEV01"
+            }
+          },
+          {
+            "applicationName": "iOS",
+            "description": "Marriott Mobile iOS",
+            "domain": "Chaels",
+            "releases": [
+              {
+                "releaseNumber": "R6.11",
+                "plannedDate": "06/24/2018",
+                "actualDate": "03/09/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.12",
+                "plannedDate": "07/05/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.13",
+                "plannedDate": "08/02/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.14",
+                "plannedDate": "09/15/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R7.0",
+                "plannedDate": "06/29/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              }
+            ],
+            "ppmProjects": {
+              "fileName": "S",
+              "Link": "http://www.ppmproject.com"
+            },
+            "environments": {
+              "environmentName": "Dev",
+              "HostName": "MARRIOTTDEVMOBILEDEV01"
+            }
+          },
+          {
+            "applicationName": "domain",
+            "description": "Marriott Mobile iOS",
+            "domain": "Channels",
+            "releases": [
+               {
+                "releaseNumber": "R6.11",
+                "plannedDate": "12/09/2018",
+                "actualDate": "03/09/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.12",
+                "plannedDate": "06/30/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.13",
+                "plannedDate": "06/30/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.14",
+                "plannedDate": "07/25/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R7.0",
+                "plannedDate": "07/02/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              }
+            ],
+            "ppmProjects": {
+              "fileName": "S",
+              "Link": "http://www.ppmproject.com"
+            },
+            "environments": {
+              "environmentName": "Dev",
+              "HostName": "MARRIOTTDEVMOBILEDEV01"
+            }
+          }
+      ]
+  };
+
+   $scope.freshData = angular.copy($scope.data);
+
     $scope.names = [];
     for(var i=0; i<$scope.data.data.length; i++){
       $scope.names.push($scope.data.data[i].applicationName);

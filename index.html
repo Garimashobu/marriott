@@ -16,6 +16,10 @@
 </head>
 <body ng-controller="mainCtrl">  
 <div class="topnav" >
+  <div class="logo">
+  	<img src="j_logo.jpg" alt="Jarvus Logo" width="7%">
+  	<span class="title">Jarvus</span>
+  </div>
   <div class="search-container">
     <input type="text" ng-model="selectedApplication" uib-typeahead="name for name in names | filter:$viewValue" class="form-control" placeholder="Search Application" ng-keydown="checkForEnterKey($event ,selectedApplication)"> 
 
@@ -24,17 +28,20 @@
 <div class="mainBody" >
 	<!-- {{releaseBodyPage}} -->
 	<div class="releaseBodyPage" ng-show=releaseBodyPage>
-		<div>
-			<span>Filter By</span>
+		<div class="filters">
+			<span><b>Filter By</b></span>
 			<span>
 				<select ng-model="selectedData" ng-change = "filterDomainData()">
-					<option disabled selected value>Domain</option>
-					<option >Channels</option>
+					<option disabled selected value>Select Domain</option>
+					<option>Channels</option>
+					<option>Loyality</option>
+					<option>Reservations</option>
+					<option>Property</option>
 				</select>
 			</span>
 			<span>
 				<select ng-model="selectedTimeData" ng-change = "filterTimeFrameData()">
-					<option disabled selected value>TimeFrame</option>
+					<option disabled selected value>Select TimeFrame</option>
 					<option>2 weeks</option>
 					<option>3 weeks</option>
 					<option>4 weeks</option>
@@ -42,7 +49,7 @@
 				</select>
 			</span>
 		</div>
-		<div id="chartContainer" style="height: 300px; width: 70%;"></div>
+		<div id="chartContainer" style="height: 400px; width: 75%;"></div>
 	</div>
 	<!-- {{applicationbBodyPage}} -->
 	<div class="applicationBody" ng-show=applicationbBodyPage>

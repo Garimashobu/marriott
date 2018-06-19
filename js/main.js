@@ -113,23 +113,22 @@ chart.render();
 
 var getReleaseData = function() {
   var data = [];
-  var j =0;
-  if($scope.temp.length > 0){
-    $scope.data.data = $scope.temp;
+  if($scope.temp.length>0){
+    $scope.data = $scope.temp;
   };
   
-  for (var i = 0; i < $scope.data.data.length; i++) {
+  for (var i = 0; i < $scope.data.length; i++) {
     var app = {
-      name: $scope.data.data[i].applicationName,
-      domain: $scope.data.data[i].domain,
-      description: $scope.data.data[i].description
+      name: $scope.data[i].applicationName,
+      domain: $scope.data[i].domain,
+      description: $scope.data[i].description
     };
     
-    for (key in $scope.data.data[i].releases) {
+    for (key in $scope.data[i].releases) {
       var release = {
-        x: new Date($scope.data.data[i].releases[key].plannedDate),
+        x: new Date($scope.data[i].releases[key].plannedDate),
         y: (i+2)* 2 * 10,
-        z: Object.keys($scope.data.data[i].releases[key].dependencies).length
+        z: Object.keys($scope.data[i].releases[key].dependencies).length
       };
       
       data.push(Object.assign({}, app, release));
@@ -139,53 +138,68 @@ var getReleaseData = function() {
   return data;
 };
 
+$scope.clearFilters = function() {
+  $scope.selectedData = $scope.selectedTimeData = "";
+  $scope.temp = $scope.freshData;
+  chart.options.data[0].dataPoints = getReleaseData();
+  chart.render();
+}
+
 $scope.filterDomainData = function() {
   $scope.selectedTimeData = "";
-  $scope.temp = $filter('filter')($scope.data.data, { domain : $scope.selectedData });
+  $scope.temp = $filter('filter')($scope.freshData, { domain : $scope.selectedData });
   chart.options.data[0].dataPoints = getReleaseData();
   chart.render();
 };
 
 $scope.filterTimeFrameData = function() {
-  $scope.selectedData = "";
-  var timeFrame;
+  var filteredData;
   var data;
-  $scope.temp = [];
+  getFilteredData = function() {
+    $scope.temp = [];
+    if($scope.selectedData){
+      return filteredData = $filter('filter')($scope.freshData, { domain : $scope.selectedData });
+    }
+  };
+
+  
+  
+  var timeFrame;
+  
   switch($scope.selectedTimeData) {
     case "2 weeks":
-    console.log($scope.freshData);
-    data = $scope.freshData;
+    data = getFilteredData() ? filteredData : $scope.freshData;
     timeFrame = twoWeeks();
     break;
 
     case "3 weeks":
-    data = $scope.freshData;
+    data = getFilteredData() ? filteredData : $scope.freshData;
     timeFrame = threeWeeks();
     break;
 
     case "4 weeks":
-    data = $scope.freshData;
+    data = getFilteredData() ? filteredData : $scope.freshData;
     timeFrame = fourWeeks();
     break;
 
     case "6 weeks":
-    data = $scope.freshData;
+    data = getFilteredData() ? filteredData : $scope.freshData;
     timeFrame = sixWeeks();
     break;
   }
   
 
-  for(var i= 0; i<data.data.length; i++){
+  for(var i= 0; i<data.length; i++){
     var app = {
-      applicationName: data.data[i].applicationName,
-      domain: data.data[i].domain,
-      description: data.data[i].description,
+      applicationName: data[i].applicationName,
+      domain: data[i].domain,
+      description: data[i].description,
       releases: []
     };
 
-    for (key in data.data[i].releases) {
-      if(moment(data.data[i].releases[key].plannedDate).isSameOrBefore(moment(timeFrame))){
-        app.releases.push(data.data[i].releases[key]);
+    for (key in data[i].releases) {
+      if(moment(data[i].releases[key].plannedDate).isSameOrBefore(moment(timeFrame))){
+        app.releases.push(data[i].releases[key]);
      }
     }
     if(timeFrame) {
@@ -204,14 +218,14 @@ $scope.filterTimeFrameData = function() {
 
     var getData = function(selectedApplication){
         
-        for(var i=0; i<$scope.data.data.length; i++){
-          if($scope.data.data[i].applicationName === selectedApplication) {
-            $scope.selectedApplication = $scope.data.data[i].applicationName
-            $scope.domain = $scope.data.data[i].domain;
-            $scope.description = $scope.data.data[i].description;
-            $scope.releases = $scope.data.data[i].releases;
-            $scope.ppmProjects = $scope.data.data[i].ppmProjects;
-            $scope.environments = $scope.data.data[i].environments;
+        for(var i=0; i<$scope.data.length; i++){
+          if($scope.data[i].applicationName === selectedApplication) {
+            $scope.selectedApplication = $scope.data[i].applicationName
+            $scope.domain = $scope.data[i].domain;
+            $scope.description = $scope.data[i].description;
+            $scope.releases = $scope.data[i].releases;
+            $scope.ppmProjects = $scope.data[i].ppmProjects;
+            $scope.environments = $scope.data[i].environments;
           }
         }
         $scope.goToSecondPage();
@@ -237,12 +251,11 @@ $scope.filterTimeFrameData = function() {
       return twoWeeks = today.add(42, 'days');
     };
 
-    $scope.data = {
-      "data": [
+    $scope.data = [
           {
             "applicationName": "Marriott Mobile iOS",
             "description": "Marriott Mobile iOS",
-            "domain": "Chaels",
+            "domain": "Loyality",
             "releases": [
                {
                 "releaseNumber": "R6.11",
@@ -274,7 +287,7 @@ $scope.filterTimeFrameData = function() {
               },
               {
                 "releaseNumber": "R6.13",
-                "plannedDate": "10/31/2018",
+                "plannedDate": "07/14/2018",
                 "actualDate": "05/31/2018",
                 "capabilities": [
                             "Awards",
@@ -326,7 +339,7 @@ $scope.filterTimeFrameData = function() {
           {
             "applicationName": "iOS",
             "description": "Marriott Mobile iOS",
-            "domain": "Chaels",
+            "domain": "Reservations",
             "releases": [
               {
                 "releaseNumber": "R6.11",
@@ -492,14 +505,99 @@ $scope.filterTimeFrameData = function() {
               "environmentName": "Dev",
               "HostName": "MARRIOTTDEVMOBILEDEV01"
             }
+          },
+          {
+            "applicationName": "domain",
+            "description": "Marriott Mobile iOS",
+            "domain": "Channels",
+            "releases": [
+               {
+                "releaseNumber": "R6.11",
+                "plannedDate": "07/14/2018",
+                "actualDate": "03/09/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.12",
+                "plannedDate": "07/21/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.13",
+                "plannedDate": "07/08/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R6.14",
+                "plannedDate": "07/25/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              },
+              {
+                "releaseNumber": "R7.0",
+                "plannedDate": "07/02/2018",
+                "actualDate": "05/31/2018",
+                "capabilities": [
+                            "Awards",
+                            "Account Merge"
+                          ],
+                "dependencies": [
+                            "API",
+                             "MPG",
+                             "Valhalla"
+                          ]
+              }
+            ],
+            "ppmProjects": {
+              "fileName": "S",
+              "Link": "http://www.ppmproject.com"
+            },
+            "environments": {
+              "environmentName": "Dev",
+              "HostName": "MARRIOTTDEVMOBILEDEV01"
+            }
           }
-      ]
-  };
+
+      ];
 
    $scope.freshData = angular.copy($scope.data);
 
     $scope.names = [];
-    for(var i=0; i<$scope.data.data.length; i++){
-      $scope.names.push($scope.data.data[i].applicationName);
+    for(var i=0; i<$scope.data.length; i++){
+      $scope.names.push($scope.data[i].applicationName);
     }
   });

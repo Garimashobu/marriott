@@ -14,8 +14,9 @@ body {
 
 }
 .topnav .logo .title{
-  font-size: 3.5em;
+  font-size: 2.5em;
   vertical-align: bottom;
+  font-weight: bold;
 }
 .topnav .search-container {
   float: right;
@@ -66,6 +67,26 @@ body {
   height: 100%; 
 }
 
+.back-page {
+	padding: 15px 0;
+	color: #999;
+	font-style: italic;
+	cursor: pointer;
+	float: left;
+}
+
+.tabbable .nav-tabs a:selected {
+	background-color: red;
+	   /* background-color: #ffd;
+    font-weight: bold;
+    color: #777;*/
+}
+.applicationBody.row > div.col > div > ul > li.ng-scope.active > a {
+	background-color: #ffd;
+    font-weight: bold;
+    color: #777;
+}
+
 .divTable{
 	display: table;
 	width: 100%;
@@ -78,13 +99,22 @@ body {
 	display: table-header-group;
 }
 .divTableCell, .divTableHead {
-	border: 1px solid #999999;
+	/*border: 1px solid #999999;*/
 	display: table-cell;
 	padding: 3px 10px;
+}
+.tabbedBody .divTableCell {
+	border-bottom: 1px solid #999;
+}
+.tabbedBody .divTableHead {
+	border-bottom: 2px solid #999;
 }
 .divTableHeading {
 	background-color: #EEE;
 	display: table-header-group;
+	font-weight: bold;
+}
+.divTableRowTitle {
 	font-weight: bold;
 }
 .divTableFoot {
@@ -99,6 +129,15 @@ body {
 .releaseBody{
 	margin: 10px 0px;
 }
+.snowBody .divTableRow {
+	cursor: pointer;
+}
+.snowBody .divTableRow:hover {
+	background-color: #ffd;
+}
+.contactBody .divTableCell, .contactBody .divTableHead, .envBody .divTableCell, .envBody .divTableHead, .ppmBody .divTableCell, .ppmBody .divTableHead {
+	border-bottom-color: transparent;
+}
 .width25{
 	width: 25%;
 }
@@ -108,7 +147,9 @@ body {
 .filters {
   padding: 10px 0px;
 }
+/*
 .releaseBodyPage {
     position: relative;
     left: 13%;
 }
+*/

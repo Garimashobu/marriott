@@ -11,67 +11,77 @@
     <script type="text/javascript" src="js/moment.js"></script>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css" type="text/css"/>
 </head>
 <body ng-controller="mainCtrl">  
-<div class="topnav" >
+<div class="topnav" style="padding-bottom:10px;">
   <div class="logo">
   	<img src="j_logo.jpg" alt="Jarvus Logo" width="7%">
-  	<span class="title">Just Another Rather Very Usable System</span>
+  	<span class="title">Just Another Rather Very Usable System (JARVUS)</span>
   </div>
-  <div class="search-container">
-    <input type="text" ng-model="selectedApplication" uib-typeahead="name for name in names | filter:$viewValue" class="form-control" placeholder="Search Application" ng-keydown="checkForEnterKey($event ,selectedApplication)"> 
-
+  <div class="container">
+  	<div class="row">
+	  <div class="search-container row">
+	    <input type="text" style="border:1px solid #999;" ng-model="selectedApplication" uib-typeahead="name for name in names | filter:$viewValue" class="form-control" placeholder="Search Application" ng-keydown="checkForEnterKey($event ,selectedApplication)"> 
+	  </div>
+  	</div>
   </div>
 </div>
-<div class="mainBody" >
+<div class="mainBody container" >
 	<!-- {{releaseBodyPage}} -->
+	
 	<div class="releaseBodyPage" ng-show=releaseBodyPage>
-		<div class="filters">
-			<span><b>Filter By</b></span>
-			<span>
-				<select ng-model="selectedData" ng-change = "filterDomainData()">
-					<option disabled selected value>Select Domain</option>
-					<option>Channels</option>
-					<option>Loyality</option>
-					<option>Reservations</option>
-					<option>Property</option>
-				</select>
-			</span>
-			<span>
-				<select ng-model="selectedTimeData" ng-change = "filterTimeFrameData()">
-					<option disabled selected value>Select TimeFrame</option>
-					<option>2 weeks</option>
-					<option>3 weeks</option>
-					<option>4 weeks</option>
-					<option>6 weeks</option>
-				</select>
-			</span>
+		<div class="filters row">
+			<div class="col">
+				<span><b>Filter By</b></span>
+				<span>
+					<select ng-model="selectedData" ng-change = "filterDomainData()">
+						<option disabled selected value>Select Domain</option>
+						<option>Channels</option>
+						<option>Loyality</option>
+						<option>Reservations</option>
+						<option>Property</option>
+					</select>
+				</span>
+				<span>
+					<select ng-model="selectedTimeData" ng-change = "filterTimeFrameData()">
+						<option disabled selected value>Select TimeFrame</option>
+						<option>2 weeks</option>
+						<option>3 weeks</option>
+						<option>4 weeks</option>
+						<option>6 weeks</option>
+					</select>
+				</span>
+				<span><button class = "btn-primary" ng-click="clearFilters()">Clear Filters</button></span>
+			</div>
 		</div>
-		<div id="chartContainer" style="height: 400px; width: 75%;"></div>
+		<div class="row">
+			<div id="chartContainer" class="col" style="height: 400px;;"></div>
+		</div>
 	</div>
 	<!-- {{applicationbBodyPage}} -->
-	<div class="applicationBody" ng-show=applicationbBodyPage>
-		<div ng-click="goToSecondPage()">back to release page</div>
+	<div class="applicationBody row" ng-show=applicationbBodyPage>
+		<div ng-click="goToSecondPage()" class="back-page"><span class="fas fa-arrow-alt-circle-left"></span> back to release page</div>
 		<div class="divTable" style="width: 100%;">
 			<div class="divTableBody">
 				<div class="divTableRow">
-					<div class="divTableCell width15">Application Name:</div>
+					<div class="divTableCell width15 divTableRowTitle">Application Name:</div>
 					<div class="divTableCell">{{selectedApplication}}</div>
 				</div>
 				<div class="divTableRow">
-					<div class="divTableCell width15">Description:</div>
+					<div class="divTableCell width15 divTableRowTitle">Description:</div>
 					<div class="divTableCell">{{description}}</div>
 				</div>
 				<div class="divTableRow">
-					<div class="divTableCell width15">Domain:</div>
+					<div class="divTableCell width15 divTableRowTitle">Domain:</div>
 					<div class="divTableCell">{{domain}}</div>
 				</div>
 			</div>
 		</div>
 		
-	<div>
+	<div class="col tabbedBody">
 		<tabs>
 			<pane title="Releases">
 		    	<div class="releaseBody">
@@ -102,63 +112,88 @@
 				</div>
 		    </pane>
 		    <pane title="Environments">
+		    	<div class="envBody">
 		    	<div class="divTable" style="width: 100%;">
 						<div class="divTableBody">
 							<div class="divTableRow">
-								<div class="divTableCell width25">Environment Name:</div>
+								<div class="divTableCell width15 divTableRowTitle">Environment Name:</div>
 								<div class="divTableCell">{{environments.environmentName}}</div>
 							</div>
 							<div class="divTableRow">
-								<div class="divTableCell width25">Hostname/IPAddress:</div>
+								<div class="divTableCell width15 divTableRowTitle">Hostname/IPAddress:</div>
 								<div class="divTableCell">{{environments.HostName}}</div>
 							</div>
 						</div>
 					</div>
-		    	<div></div>
+		    	</div>
 		    </pane>
 		    <pane title="PPM Projects">
+		    	<div class="ppmBody">
 		    	<div class="divTableBody">
 							<div class="divTableRow">
-								<div class="divTableCell width25">File Name:</div>
+								<div class="divTableCell width25 divTableRowTitle">File Name:</div>
 								<div class="divTableCell">{{ppmProjects.fileName}}</div>
 							</div>
 							<div class="divTableRow">
-								<div class="divTableCell width25">Link:</div>
+								<div class="divTableCell width25 divTableRowTitle">Link:</div>
 								<div class="divTableCell"><a href="{{ppmProjects.Link}}">{{ppmProjects.Link}}</a></div>
 							</div>
 						</div>
+				</div>
 		    </pane>
 		    <pane title="Snow Tickets">
-		    	<div class="divTable" style="width: 100%;">
-						<div class="divTableBody">
-							<div class="divTableRow">
-								<div class="divTableCell width25">Snow Tickets</div>
+		    	<div class="snowBody">
+					<div class="divTable" style="width: 100%;">
+						<div class="divTableBody" >
+							<div class= "divTableHead divTableCell"><b>SNOW Ticket #</b>
+							</div>
+
+							<div class="divTableRow" onclick="window.open('https://marriott.service-now.com/navpage.do')">
+								<div class="divTableCell">CHG000049696</div>
+							</div>
+							<div class="divTableRow" onclick="window.open('https://marriott.service-now.com/navpage.do')">
+								<div class="divTableCell">CHG000052601</div>
+							</div>
+							<div class="divTableRow" onclick="window.open('https://marriott.service-now.com/navpage.do')">
+								<div class="divTableCell">CHG000052732</div>
+							</div>
+							<div class="divTableRow" onclick="window.open('https://marriott.service-now.com/navpage.do')">
+								<div class="divTableCell">CHG000068309</div>
+							</div>
+							<div class="divTableRow" onclick="window.open('https://marriott.service-now.com/navpage.do')">
+								<div class="divTableCell">CHG000069956</div>
 							</div>
 						</div>
 					</div>
+				</div>
+					
+					
+					
+					
 		    	<div></div>
 		    </pane>
 		    <pane title="Contact Information">
-		    	<div class="divTableBody">
-					<div class="divTableRow">
-						<div class="divTableCell width25">Name:</div>
-						<div class="divTableCell">Marsha</div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell width25">Type:</div>
-						<div class="divTableCell"></div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell width25">Phone:</div>
-						<div class="divTableCell"></div>
-					</div>
-					<div class="divTableRow">
-						<div class="divTableCell width25">Email:</div>
-						<div class="divTableCell"></div>
+		    	<div class="contactBody">
+			    	<div class="divTableBody">
+						<div class="divTableRow">
+							<div class="divTableCell width25 divTableRowTitle">Name:</div>
+							<div class="divTableCell">David Kirby</div>
+						</div>
+						<div class="divTableRow">
+							<div class="divTableCell width25 divTableRowTitle">Type:</div>
+							<div class="divTableCell">Project Manager</div>
+						</div>
+						<div class="divTableRow">
+							<div class="divTableCell width25 divTableRowTitle">Phone:</div>
+							<div class="divTableCell">703-456-5768</div>
+						</div>
+						<div class="divTableRow">
+							<div class="divTableCell width25 divTableRowTitle">Email:</div>
+							<div class="divTableCell"><a href="mailto:David.Kirby@marriott-sp.com">David.Kirby@marriott-sp.com</a></div>
+						</div>
 					</div>
 				</div>
 		    </pane>
-		    
 	    </tabs>
 	</div>
 	</div>
